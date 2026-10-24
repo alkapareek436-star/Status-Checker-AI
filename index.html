@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JORDEN AVIATOR AI BOT</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+:root {
+  --neon: #ff3030;
+  --neon-soft: #ff303070;
+  --text-soft: #d6a0a0;
+  --border: #5b2020;
+  --panel: #100707;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 22px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #351010 0%, #100505 45%, #050202 100%);
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: 22px 18px;
+  text-align: center;
+  background: linear-gradient(160deg, #160707, #080303);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: 0 0 28px #ff202018, inset 0 0 20px #ff202008;
+  overflow: hidden;
+}
+
+/* WINNERS SECTION */
+.winning-section {
+  margin-bottom: 24px;
+  padding: 12px 10px;
+  background: #0a0303;
+  border: 1px solid #492020;
+  border-radius: 12px;
+}
+
+.winning-heading {
+  color: #ff5555;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px #ff303060;
+}
+
+.winner-window {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.winner-track {
+  display: flex;
+  flex-direction: row;
+  width: max-content;
+  gap: 24px;
+  animation: winnerScroll 120s linear infinite;
+}
+
+.winner-track span {
+  flex: 0 0 auto;
+  height: 28px;
+  line-height: 28px;
+  color: #f4dada;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+@keyframes winnerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* TOP BAR */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 25px;
+}
+
+.verification-label {
+  color: #ff8585;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1.3px;
+}
+
+.online-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ff7777;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff3030;
+  box-shadow: 0 0 10px #ff3030;
+  animation: pulse 1.2s infinite;
+}
+
+/* TITLE */
+.brand {
+  color: #fff;
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 0 12px #ff303080;
+  animation: brandGlow 2s infinite alternate;
+}
+
+.realtime-label {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #ff8585;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff3030;
+  box-shadow: 0 0 8px #ff3030;
+  animation: pulse 1s infinite;
+}
+
+@keyframes brandGlow {
+  from { text-shadow: 0 0 5px #ff303040; }
+  to { text-shadow: 0 0 18px #ff3030; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* CLICKABLE TICK */
+.orb {
+  width: 112px;
+  height: 112px;
+  margin: 35px auto 24px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: transform 0.2s;
+}
+
+.orb:active {
+  transform: scale(0.94);
+}.ring {
+  position: absolute;
+  inset: 0;
+  border: 3px solid #3b1111;
+  border-top-color: #ff3030;
+  border-right-color: #ff5555;
+  border-radius: 50%;
+  box-shadow: 0 0 16px #ff303050;
+  animation:rotate 3s linear infinite;
+}
+
+.check {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #4c1111, #170505);
+  border: 1px solid #ff3030;
+  color: #ff4545;
+  font-size: 47px;
+  font-weight: bold;
+  text-shadow: 0 0 15px #ff3030;
+  box-shadow: 0 0 25px #ff303030, inset 0 0 15px #ff303020;
+}
+
+.orb:focus-visible {
+  outline: 2px solid #ff7777;
+  outline-offset: 5px;
+}
+
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+/* STATUS TEXT */
+h1 {
+  margin: 0;
+  color: #fff;
+  font-size: 21px;
+  line-height: 1.4;
+  font-weight: 800;
+}
+
+.subtitle {
+  margin: 10px 0 20px;
+  color: #ff7777;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+/* PROGRESS */
+.progress-section {
+  display: none;
+  margin: 20px 0 18px;
+  animation: appear 0.3s ease;
+}
+
+.progress-section.show {
+  display: block;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 9px;
+  color: #ffaaaa;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.progress-track {
+  height: 9px;
+  width: 100%;
+  border-radius: 20px;
+  background: #2a0b0b;
+  border: 1px solid #622020;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #a90000, #ff3030, #ff8585);
+  box-shadow: 0 0 12px #ff3030;
+  transition: width 0.08s linear;
+}
+
+.progress-hint {
+  margin-top: 9px;
+  color: #bb7777;
+  font-size: 10px;
+}
+
+/* DEPOSIT PANEL */
+.deposit-message {
+  margin-top: 20px;
+  padding: 17px 12px;
+  border: 1px solid #642323;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #210909, #100404);
+  box-shadow: inset 0 0 18px #ff303010;
+}
+
+.deposit-title {
+  color: #ff5555;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.access-message {
+  margin-top: 10px;
+  color: #e7caca;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* BOTTOM DOTS */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin: 24px 0 18px;
+}
+
+.dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff3030;
+  box-shadow: 0 0 8px #ff3030;
+  animation: pulse 1s infinite;
+}
+
+.dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* FOOTER BRAND */
+.footer {
+  margin-top: 12px;
+  padding-top: 15px;
+  border-top: 1px solid #3b1717;
+  color: #ff4545;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px #ff303070;
+}
+
+/* ANIMATIONS */
+@keyframes appear {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 360px) {
+  .brand { font-size: 23px; }
+  h1 { font-size: 19px; }
+  .card { padding: 18px 13px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="winning-section">
+    <div class="winning-heading">🏆 LATEST WINNERS</div>
+
+    <div class="winner-window">
+      <div class="winner-track">
+
+        <span>🇮🇳 Ajay from India (ID-423567987) — Win ₹52,300 INR</span>
+        <span>🇮🇳 Raju from India (ID-227830267) — Win ₹29,000 INR</span>
+        <span>🇮🇳 Rajesh from India (ID-731825604) — Win ₹34,500 INR</span>
+        <span>🇮🇳 Sandeep from India (ID-482617395) — Win ₹47,200 INR</span>
+        <span>🇮🇳 Pawan from India (ID-916384257) — Win ₹28,600 INR</span>
+        <span>🇮🇳 Gaurav from India (ID-357219846) — Win ₹61,800 INR</span>
+        <span>🇮🇳 Ramesh from India (ID-624831759) — Win ₹39,400 INR</span>
+        <span>🇮🇳 Sunil from India (ID-815726493) — Win ₹53,700 INR</span>
+        <span>🇮🇳 Anuj from India (ID-293648175) — Win ₹26,900 INR</span>
+        <span>🇮🇳 Deepak from India (ID-748315926) — Win ₹72,500 INR</span>
+        <span>🇮🇳 Manoj from India (ID-561927384) — Win ₹41,600 INR</span>
+        <span>🇮🇳 Ravi from India (ID-839164725) — Win ₹58,300 INR</span>
+        <span>🇮🇳 Tarun from India (ID-426795183) — Win ₹32,800 INR</span>
+        <span>🇮🇳 Nitin from India (ID-175839462) — Win ₹67,400 INR</span>
+        <span>🇮🇳 Ajit from India (ID-692481537) — Win ₹45,900 INR</span>
+        <span>🇮🇳 Pradeep from India (ID-318649275) — Win ₹37,600 INR</span>
+        <span>🇮🇳 Lokesh from India (ID-957213684) — Win ₹81,200 INR</span>
+        <span>🇮🇳 Ashok from India (ID-284761953) — Win ₹29,500 INR</span>
+        <span>🇮🇳 Sumit from India (ID-643918527) — Win ₹56,700 INR</span>
+        <span>🇮🇳 Vikas from India (ID-572836194) — Win ₹43,800 INR</span>
+        <span>🇮🇳 Kapil from India (ID-196473825) — Win ₹69,100 INR</span>
+        <span>🇮🇳 Dinesh from India (ID-835291647) — Win ₹35,400 INR</span>
+
+        <span>🇵🇰 Ali from Pakistan (ID-583719246) — Win ₨68,500 PKR</span>
+        <span>🇵🇰 Ahmed from Pakistan (ID-714285963) — Win ₨75,200 PKR</span>
+        <span>🇵🇰 Usman from Pakistan (ID-392817564) — Win ₨91,400 PKR</span>
+        <span>🇵🇰 Hamza from Pakistan (ID-826451739) — Win ₨57,800 PKR</span>
+
+        <span>🇺🇸 John from USA (ID-682415793) — Win $850 USD</span>
+        <span>🇺🇸 Michael from USA (ID-517294638) — Win $1,250 USD</span>
+        <span>🇺🇸 David from USA (ID-394826175) — Win $2,100 USD</span>
+        <span>🇺🇸 Daniel from USA (ID-825173649) — Win $975 USD</span>
+
+        <!-- Repeated entries for scrolling -->
+        <span>🇮🇳 Ajay from India (ID-423567987) — Win ₹52,300 INR</span>
+        <span>🇮🇳 Raju from India (ID-227830267) — Win ₹29,000 INR</span>
+
+        <span>🇵🇰 Ali from Pakistan (ID-583719246) — Win ₨68,500 PKR</span>
+        <span>🇵🇰 Ahmed from Pakistan (ID-714285963) — Win ₨75,200 PKR</span>
+        <span>🇵🇰 Usman from Pakistan (ID-392817564) — Win ₨91,400 PKR</span>
+        <span>🇵🇰 Hamza from Pakistan (ID-826451739) — Win ₨57,800 PKR</span>
+
+        <span>🇺🇸 John from USA (ID-682415793) — Win $850 USD</span>
+        <span>🇺🇸 Michael from USA (ID-517294638) — Win $1,250 USD</span>
+        <span>🇺🇸 David from USA (ID-394826175) — Win $2,100 USD</span>
+        <span>🇺🇸 Daniel from USA (ID-825173649) — Win $975 USD</span>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div class="verification-label">ACCOUNT VERIFICATION</div>
+
+    <div class="online-label">
+      <span class="online-dot"></span>
+      ONLINE
+    </div>
+  </div>
+
+  <div class="brand">
+    STATUS CHECKER
+
+    <div class="realtime-label">
+      <span class="live-dot"></span>
+      REAL-TIME STATUS CHECK
+    </div>
+  </div>
+
+  <div
+    class="orb"
+    id="verifyButton"
+    role="button"
+    tabindex="0"
+    aria-label="Replay verification animation"
+    title="Click to replay"
+  >
+    <div class="ring"></div>
+    <div class="check">✓</div>
+  </div>
+
+  <h1 id="statusTitle">Account Verified Successfully</h1>
+  <p class="subtitle" id="statusSubtitle">Verification Complete</p>
+
+  <div class="progress-section" id="progressSection">
+    <div class="progress-label">
+      <span>VERIFYING ACCOUNT</span>
+      <span id="progressPercent">0%</span>
+    </div>
+
+    <div
+      class="progress-track"
+      role="progressbar"
+      aria-label="Demo progress animation"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+      id="progressTrack"
+    >
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="progress-hint" id="progressHint">
+      Please wait...
+    </div>
+  </div>
+
+  <div class="deposit-message">
+    <div class="deposit-title">Deposit ₹500 / $5 to Activate</div>
+
+    <div class="access-message">
+      After deposit bot will be activated automatically
+    </div>
+  </div>
+
+  <div class="dots">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="footer">JORDEN AVIATOR AI BOT</div>
+
+</div>
+
+<script>
+if (window.Telegram && window.Telegram.WebApp) {
+  window.Telegram.WebApp.ready();
+  window.Telegram.WebApp.expand();
+}
+
+const verifyButton = document.getElementById("verifyButton");
+const statusTitle = document.getElementById("statusTitle");
+const statusSubtitle = document.getElementById("statusSubtitle");
+const progressSection = document.getElementById("progressSection");
+const progressFill = document.getElementById("progressFill");
+const progressPercent = document.getElementById("progressPercent");
+const progressHint = document.getElementById("progressHint");
+const progressTrack = document.getElementById("progressTrack");
+
+let animationTimer = null;
+
+function startVerificationAnimation() {
+  if (animationTimer !== null) {
+    clearInterval(animationTimer);
+    animationTimer = null;
+  }
+
+  let progress = 0;
+
+  progressSection.classList.add("show");
+  statusTitle.textContent = "Verifying Account...";
+  statusSubtitle.textContent =
+    "Please wait while the animation completes";
+
+  progressFill.style.transition = "none";
+  progressFill.style.width = "0%";
+  progressPercent.textContent = "0%";
+  progressTrack.setAttribute("aria-valuenow", "0");
+  progressHint.textContent = "Verification animation in progress...";
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      progressFill.style.transition = "width 0.08s linear";
+
+      animationTimer = setInterval(() => {
+        progress += 1;
+
+        progressFill.style.width = progress + "%";
+        progressPercent.textContent = progress + "%";
+        progressTrack.setAttribute("aria-valuenow", String(progress));
+
+        if (progress >= 100) {
+          clearInterval(animationTimer);
+          animationTimer = null;
+
+          statusTitle.textContent = "Account Verified Successfully";
+          statusSubtitle.textContent =
+            "Verification Animation Complete";
+          progressHint.textContent = "100% complete";
+          progressFill.style.width = "100%";
+        }
+      }, 35);
+    });
+  });
+}
+
+verifyButton.addEventListener("click", startVerificationAnimation);
+
+verifyButton.addEventListener("keydown", function(event) {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    startVerificationAnimation();
+  }
+});
+</script>
+
+</body>
+</html>
